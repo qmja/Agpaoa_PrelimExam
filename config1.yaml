@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Installs the latest python3 and pip3 and Install Java open-jdk
+    package:
+      motd_message: "Ansible Managed node by {{user_madiane}}"
+      name: 
+        - "{{python3-pip_package}}"
+        - "{{default-jdk_package}}"
+      state: latest
+   

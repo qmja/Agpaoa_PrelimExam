@@ -1,0 +1,53 @@
+---
+- hosts: all
+  become: true
+  vars:
+    username1: Managed-Node_Ubuntu
+    username2: Managed-Node_CentOS
+ 
+  tasks:
+  
+  - name: MOTD
+    template:
+      src: motd.j2
+      dest: /etc/motd
+    tags:
+      - motd_config
+
+  - name: User - Ubuntu
+    ansible.builtin.user:
+      name: "{{ username1 }}"
+      state: present
+    when: ansible_distribution == "Ubuntu"
+
+  - name: User - CentOS
+    ansible.builtin.user:
+      name: "{{ username2 }}"
+      state: present
+    when: ansible_distribution == "CentOS"
+
+  - name: Installs the latest python3 and pip3 in Ubuntu
+    apt:
+      name:
+        - python3 
+        - python3-pip
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Installs the latest python3 and pip3 in CentOS
+    dnf:
+     name:
+       - python3 
+       - python3-pip
+     state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Java open-jdk in Ubuntu
+    apt:
+      name: default-jdk
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install Java open-jdk in CentOS
+    dnf:
+      name: java-11-openjdk-devel
+    when: ansible_distribution == "CentOS"
